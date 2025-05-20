@@ -1,72 +1,40 @@
-import pygame
-from pygame import Rect
+import os
+import random   
+import math
+import pygame   
+from os import listdir
+from os.path import isfile, join
 
-WIDTH = 800
-HEIGHT = 600
+pygame.init()
 
-# player
-player = Rect((100, 500), (40, 40))
-player_vel = [0, 0]
-on_ground = False
+pygame.display.set_caption("Plataformer")
 
-platforms = [
-    Rect((0, 580), (800, 20)),
-    Rect((200, 450), (120, 20)),
-    Rect((400, 350), (120, 20)),
-    Rect((600, 250), (120, 20)),
-]
+BG_COLOR = (222, 255, 255)
+WIDTH, HEIGHT = 1000, 800
+FPS = 60
+PLAYER_VEL = 5
 
-GRAVITY = 0.5
-JUMP_STRENGTH = -10  # Negativo para pular para cima
-MOV_SPEED = 5
+window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-def main():
-    global on_ground, player_vel
-    pygame.init()
-    tela = pygame.display.set_mode((WIDTH, HEIGHT))
+# Essa função global serve para iniciar o jogo
+def main(window):
     clock = pygame.time.Clock()
-    running = True
 
-    while running:
+    # Criação de um loop while, onde ficará em loop contínuo e atuará como nosso loop de eventos
+    run = True
+    while run:
+        clock.tick(FPS)
+        # A linha de cima garante que nosso loop while execute por 60 quadros por segundo.
+
+        # Aqui estou criando um evento aonde verifica se o usuário do jogo deseja sair.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and on_ground:
-                    player_vel[1] = JUMP_STRENGTH
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            player.x -= MOV_SPEED
-        if keys[pygame.K_RIGHT]:
-            player.x += MOV_SPEED
-
-        player_vel[1] += GRAVITY
-        player.y += player_vel[1]
-
-        on_ground = False
-        for plat in platforms:
-            if player.colliderect(plat) and player_vel[1] >= 0:
-                player.bottom = plat.top
-                player_vel[1] = 0
-                on_ground = True
-
-        if player.left < 0:
-            player.left = 0
-        if player.right > WIDTH:
-            player.right = WIDTH
-        if player.top > HEIGHT:
-            player.topleft = (100, 500)
-            player_vel[1] = 0
-
-        tela.fill((0, 0, 0))
-        pygame.draw.rect(tela, (0, 120, 255), player)
-        for plat in platforms:
-            pygame.draw.rect(tela, (0, 200, 0), plat)
-        pygame.display.flip()
-        clock.tick(60)
+                run = False
+                break
 
     pygame.quit()
+    quit()
 
+# A razão por essa linha aqui é para chamar apenas a função principal
 if __name__ == "__main__":
-    main()
+    main(window)
